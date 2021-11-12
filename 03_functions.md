@@ -1,3 +1,5 @@
+# Function Security
+
 ### 138. Function parameters:
 
 **BEST PRACTICE**: Ensure *input validation* for all function parameters, especially if the visibility is `external` or `public` where (untrusted) users can control values.

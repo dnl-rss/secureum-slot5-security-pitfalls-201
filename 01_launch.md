@@ -1,4 +1,4 @@
-## Guarded Launches
+# Guarded Launches
 
 Guarded launches with centralized administrative controls and restricted user permissions are recommended to vet newly deployed protocols, while transitioning to more decentralized and permissionless designs. This model may reduce impact due to initial vulnerabilities and exploits.
 
