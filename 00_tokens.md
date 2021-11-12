@@ -1,12 +1,16 @@
-## ERC20 Checks
+# Token Contract Review
 
-The security tool [Slither](https://github.com/crytic/building-secure-contracts/blob/master/development-guidelines/token_integration.md#erc-conformity includes a utility, slither-check-erc) that reviews the conformance of a token to many related ERC standards.
+Contracts must be reviewed for conformity to ERC standards, contract composition, owner privileges, and token scarcity. The security tool Slither automates some of this review, and other components should be done manually.
+
+## ERC Conformity
+
+slither-check-erc that reviews the conformance of a token to many related ERC standards.
 
 ```sh
 // slither check example here
 ```
 
-The following properties are reviewed by slither-check-erc:
+[ref](https://github.com/crytic/building-secure-contracts/blob/master/development-guidelines/token_integration.md#erc-conformity)
 
 ### 102. ERC20 transfer and transferFrom:
 
@@ -20,7 +24,7 @@ The following properties are reviewed by slither-check-erc:
 
 ### 104. ERC20 decimals returns a uint8:
 
-`ERC20` function `decimals()` should returns `uint8`.
+`ERC20` function `decimals()` should return `uint8`.
 
 **WARNING**: Several faulty `ERC20` implementations incorrectly return `uint256` for `decimals()`. If this is the case, ensure the value returned is below 255.
 
@@ -46,13 +50,15 @@ The hook is called before any calls to `send`, `transfer`, `operatorSend`, `mint
 
 ### 108. Token Inflation via interest:
 
-Some tokens distribute interest to token holders.
+Some tokens *distribute interest* to token holders.
 
 Potential interest earned from the token should be taken into account.
 
-**WARNING**: Earned interest might be trapped in the contract if not taken into account.
+**WARNING**: Earned interest *might be trapped* in the contract if not taken into account.
 
 ## Contract Composition Checks
+
+The organization and deployment of contracts affects their security.
 
 [ref](https://github.com/crytic/building-secure-contracts/blob/master/development-guidelines/token_integration.md#contract-composition)
 
@@ -72,7 +78,9 @@ e.g. `balances[token_address][msg.sender]` might not reflect the actual balance.
 
 ## Owner Privileges
 
-Slither [ref](https://github.com/crytic/building-secure-contracts/blob/master/development-guidelines/token_integration.md#owner-privileges)
+Projects often launch with an owner who has elevated administrative privileges over the contracts. While these privileges may help projects to intervene in the case of unexpected contract behavior, they can introduce their own security concerns if the owner is malicious or compromised.
+
+[ref](https://github.com/crytic/building-secure-contracts/blob/master/development-guidelines/token_integration.md#owner-privileges)
 
 ### 112. Token is not upgradeable:
 
@@ -92,11 +100,13 @@ Malicious or compromised owners can trap contracts relying on tokens with a blac
 
 ### 116. Token development team is known and can be held responsible for abuse:
 
-Contracts with anonymous development teams, or that reside in legal shelters should require a higher standard of review.
+Contracts with anonymous development teams, or that reside in legal shelters, should require a higher standard of review.
 
 ## Token Scarcity
 
-Slither [ref](https://github.com/crytic/building-secure-contracts/blob/master/development-guidelines/token_integration.md#token-scarcity)
+The scarcity, liquidity, and distribution of a token introduce vulnerabilities which should be considered in a security review.
+
+[ref](https://github.com/crytic/building-secure-contracts/blob/master/development-guidelines/token_integration.md#token-scarcity)
 
 ### 117. No token user owns most of the supply:
 
@@ -104,7 +114,7 @@ If a few users own most of the tokens, they can influence operations based on th
 
 ### 118. Token total supply is sufficient:
 
-Tokens with a low total supply can be easily manipulated.
+Tokens with a low `totalSupply` can be easily manipulated.
 
 ### 119. Tokens are located in more than a few exchanges:
 
@@ -114,36 +124,38 @@ If all the tokens are in one exchange, a compromise of the exchange can compromi
 
 Users understand the associated risks of large funds or flash loans.
 
-Contracts relying on the token balance must carefully take in consideration attackers with large funds or attacks through flash loans.
+Contracts relying on the token `balance` must carefully take in consideration attackers with large funds or attacks through flash loans.
 
 ### 121. Token does not allow flash minting:
 
-Flash minting can lead to substantial swings in the balance and the total supply, which necessitate strict and comprehensive overflow checks in the operation of the token.
+*Flash minting* can lead to substantial swings in the `balance` and the `totalSupply`, which necessitate strict and comprehensive overflow checks in the operation of the token.
 
 ## Token Checklist
 
+Some of the features of ERC standards lead to vulnerabilities in the contracts, which should be considered by an auditor.
+
 [ref](https://gist.github.com/shayanb/cd495e23c7cf1a8b269f8ce7fd198538#file-token_checklist-md)
 
-### 122. ERC1400 permissioned addresses:
+### 122. `ERC1400` permissioned addresses:
 
-Can block transfers from/to specific addresses.
+Can *block transfers* from/to specific addresses.
 
-### 123. ERC1400 forced transfers:
+### 123. `ERC1400` forced transfers:
 
-Trusted actors have the ability to transfer funds however they choose.
+Trusted actors have the ability to *transfer funds however they choose*.
 
-### 124. ERC1644 forced transfers:
+### 124. `ERC1644` forced transfers:
 
-Controller has the ability to steal funds.
+Controller has the ability to *steal funds*.
 
-### 125. ERC621 control of totalSupply:
+### 125. `ERC621` control of totalSupply:
 
-totalSupply can be changed by trusted actors
+`totalSupply` *can be changed* by trusted actors
 
-### 126. ERC884 cancel and reissue:
+### 126. `ERC884` cancel and reissue:
 
-Token implementers have the ability to cancel an address and move its tokens to a new address
+Token implementers have the ability to *cancel an address* and *move its tokens* to a new address
 
-### 127. ERC884 whitelisting:
+### 127. `ERC884` whitelisting:
 
-Tokens can only be sent to whitelisted addresses
+Tokens can only be sent to *whitelisted* addresses
